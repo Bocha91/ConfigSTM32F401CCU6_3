@@ -47,13 +47,15 @@ void MX_ADC1_Init(void)
     /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
      */
     hadc1.Instance = ADC1;
-    hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8; //
+    hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4; //ADC_CLOCK_SYNC_PCLK_DIV8;
     hadc1.Init.Resolution = ADC_RESOLUTION_12B;
     hadc1.Init.ScanConvMode = ENABLE; //
-    hadc1.Init.ContinuousConvMode = ENABLE;
+    hadc1.Init.ContinuousConvMode = DISABLE;
     hadc1.Init.DiscontinuousConvMode = DISABLE;
-    hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    //hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    //hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+    hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+    hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T3_TRGO;
     hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
     hadc1.Init.NbrOfConversion = ADC_CHENNAL;
     hadc1.Init.DMAContinuousRequests = ENABLE;
@@ -67,7 +69,8 @@ void MX_ADC1_Init(void)
      */
     sConfig.Channel = ADC_CHANNEL_1;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+    //sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+    sConfig.SamplingTime = ADC_SAMPLETIME_144CYCLES;
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
         Error_Handler();
@@ -93,7 +96,8 @@ void MX_ADC1_Init(void)
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
      */
-    sConfig.Channel = ADC_CHANNEL_4;
+    //sConfig.Channel = ADC_CHANNEL_4;
+    sConfig.Channel = ADC_CHANNEL_VREFINT;
     sConfig.Rank = 4;
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
@@ -102,7 +106,8 @@ void MX_ADC1_Init(void)
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
      */
-    sConfig.Channel = ADC_CHANNEL_VREFINT;
+    //sConfig.Channel = ADC_CHANNEL_VREFINT;
+    sConfig.Channel = ADC_CHANNEL_4;
     sConfig.Rank = 5;
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
@@ -111,12 +116,31 @@ void MX_ADC1_Init(void)
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
      */
-    sConfig.Channel = ADC_CHANNEL_VBAT;
+    //sConfig.Channel = ADC_CHANNEL_VBAT;
+    sConfig.Channel = ADC_CHANNEL_5;
     sConfig.Rank = 6;
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
         Error_Handler();
     }
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_6;
+    sConfig.Rank = 7;
+    if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_7;
+    sConfig.Rank = 8;
+    if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
     /* USER CODE BEGIN ADC1_Init 2 */
 
     /*##-3- Start the conversion process and enable interrupt ##################*/
@@ -152,7 +176,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle)
         PA3     ------> ADC1_IN3
         PA4     ------> ADC1_IN4
         */
-        GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin | RIGHT_RESISTOR_Pin | BRASLET_Pin | SHUP_Pin;
+        //GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin | RIGHT_RESISTOR_Pin | BRASLET_Pin | SHUP_Pin;
+        GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin|RIGHT_RESISTOR_Pin|BRASLET_Pin|TREM1_Pin
+                          |TREM2_Pin|TREM3_Pin|TREM4_Pin;
         GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -247,8 +273,13 @@ void iKPYT_ADC1_Init(void)
             PA2     ------> ADC1_IN2
             PA3     ------> ADC1_IN3
             PA4     ------> ADC1_IN4
+            PA5     ------> ADC1_IN5
+            PA6     ------> ADC1_IN6
+            PA7     ------> ADC1_IN7
             */
-            GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin | RIGHT_RESISTOR_Pin | BRASLET_Pin | SHUP_Pin;
+            //GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin | RIGHT_RESISTOR_Pin | BRASLET_Pin | SHUP_Pin;
+            GPIO_InitStruct.Pin = LEFT_RESISTOR_Pin|RIGHT_RESISTOR_Pin|BRASLET_Pin|TREM1_Pin
+                          |TREM2_Pin|TREM3_Pin|TREM4_Pin;
             GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
             GPIO_InitStruct.Pull = GPIO_NOPULL;
             HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -393,7 +424,7 @@ void iKPYT_ADC1_Init(void)
         {
             /* Set the ADC clock prescaler */
             ADC1_COMMON->CCR &= ~(ADC_CCR_ADCPRE);
-            ADC1_COMMON->CCR |= ADC_CLOCK_SYNC_PCLK_DIV8; // hadc->Init.ClockPrescaler;
+            ADC1_COMMON->CCR |= ADC_CLOCK_SYNC_PCLK_DIV4; // hadc->Init.ClockPrescaler;
 
             /* Set ADC scan mode */
             ADC1->CR1 &= ~(ADC_CR1_SCAN);
@@ -410,24 +441,24 @@ void iKPYT_ADC1_Init(void)
             /* Enable external trigger if trigger selection is different of software start. */
             // if (hadc->Init.ExternalTrigConv != ADC_SOFTWARE_START)
             // {
-            //     /* Select external trigger to start conversion */
-            //     ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
-            //     ADC1->CR2 |= hadc->Init.ExternalTrigConv;
+                /* Select external trigger to start conversion */
+                ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
+                ADC1->CR2 |= ADC_EXTERNALTRIGCONV_T3_TRGO;
 
-            //     /* Select external trigger polarity */
-            //     ADC1->CR2 &= ~(ADC_CR2_EXTEN);
-            //     ADC1->CR2 |= hadc->Init.ExternalTrigConvEdge;
+                /* Select external trigger polarity */
+                ADC1->CR2 &= ~(ADC_CR2_EXTEN);
+                ADC1->CR2 |= ADC_EXTERNALTRIGCONVEDGE_RISING;
             // }
             // else
-            {
-                /* Reset the external trigger */
-                ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
-                ADC1->CR2 &= ~(ADC_CR2_EXTEN);
-            }
+            // {
+            //     /* Reset the external trigger */
+            //     ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
+            //     ADC1->CR2 &= ~(ADC_CR2_EXTEN);
+            // }
 
             /* Enable or disable ADC continuous conversion mode */
             ADC1->CR2 &= ~(ADC_CR2_CONT);
-            ADC1->CR2 |= ADC_CR2_CONTINUOUS((uint32_t)ENABLE);
+            //ADC1->CR2 |= ADC_CR2_CONTINUOUS((uint32_t)ENABLE);
 
             // if (hadc->Init.DiscontinuousConvMode != DISABLE)
             // {
@@ -472,7 +503,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_1);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_1);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_1);
         }
 
         /* For Rank 1 to 6 */
@@ -495,7 +526,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_2);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_2);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_2);
         }
 
         /* For Rank 1 to 6 */
@@ -518,7 +549,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_3);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_3);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_3);
         }
 
         /* For Rank 1 to 6 */
@@ -526,37 +557,14 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old SQx bits for the selected rank */
             ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 3);
             /* Set the SQx bits for the selected rank */
-            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_1, 3);
-        }
-    }
-
-    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-     */
-    // sConfig.Channel = ADC_CHANNEL_4;
-    // sConfig.Rank = 4;
-    //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
-    {
-        /* ADC_Channel include in ADC_Channel_[0..9] */
-        {
-            /* Clear the old sample time */
-            ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_4);
-            /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_4);
-        }
-
-        /* For Rank 1 to 6 */
-        {
-            /* Clear the old SQx bits for the selected rank */
-            ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 4);
-            /* Set the SQx bits for the selected rank */
-            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_1, 4);
+            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_3, 3);
         }
     }
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
      */
     // sConfig.Channel = ADC_CHANNEL_VREFINT;
-    // sConfig.Rank = 5;
+    // sConfig.Rank = 4;
     //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
     {
         /* if ADC_Channel_10 ... ADC_Channel_18 is selected */
@@ -565,15 +573,15 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR1 &= ~ADC_SMPR1(ADC_SMPR1_SMP10, ADC_CHANNEL_VREFINT);
             /* Set the new sample time */
-            ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_VREFINT);
+            ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_VREFINT);
         }
 
         /* For Rank 1 to 6 */
         {
             /* Clear the old SQx bits for the selected rank */
-            ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 5);
+            ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 4);
             /* Set the SQx bits for the selected rank */
-            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_VREFINT, 5);
+            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_VREFINT, 4);
         }
 
         /* if ADC1 Channel_16 or Channel_18 is selected for Temperature sensor or
@@ -587,45 +595,138 @@ void iKPYT_ADC1_Init(void)
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
      */
-    // sConfig.Channel = ADC_CHANNEL_VBAT;
-    // sConfig.Rank = 6;
+    // sConfig.Channel = ADC_CHANNEL_4;
+    // sConfig.Rank = 5;
     //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
     {
-        /* if ADC_Channel_10 ... ADC_Channel_18 is selected */
-        // if (ADC_CHANNEL_VBAT > ADC_CHANNEL_9)
+        /* ADC_Channel include in ADC_Channel_[0..9] */
         {
             /* Clear the old sample time */
-            ADC1->SMPR1 &= ~ADC_SMPR1(ADC_SMPR1_SMP10, ADC_CHANNEL_VBAT);
+            ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_4);
             /* Set the new sample time */
-            ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_VBAT);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_4);
         }
 
         /* For Rank 1 to 6 */
-        // if (1 < 7U)
+        {
+            /* Clear the old SQx bits for the selected rank */
+            ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 5);
+            /* Set the SQx bits for the selected rank */
+            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_4, 5);
+        }
+    }
+
+    // /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+    //  */
+    // // sConfig.Channel = ADC_CHANNEL_VBAT;
+    // // sConfig.Rank = 6;
+    // //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
+    // {
+    //     /* if ADC_Channel_10 ... ADC_Channel_18 is selected */
+    //     // if (ADC_CHANNEL_VBAT > ADC_CHANNEL_9)
+    //     {
+    //         /* Clear the old sample time */
+    //         ADC1->SMPR1 &= ~ADC_SMPR1(ADC_SMPR1_SMP10, ADC_CHANNEL_VBAT);
+    //         /* Set the new sample time */
+    //         ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_480CYCLES, ADC_CHANNEL_VBAT);
+    //     }
+
+    //     /* For Rank 1 to 6 */
+    //     // if (1 < 7U)
+    //     {
+    //         /* Clear the old SQx bits for the selected rank */
+    //         ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 6);
+    //         /* Set the SQx bits for the selected rank */
+    //         ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_VBAT, 6);
+    //     }
+
+    //     /* Pointer to the common control register to which is belonging hadc    */
+    //     /* (Depending on STM32F4 product, there may be up to 3 ADCs and 1 common */
+    //     /* control register)                                                    */
+    //     // tmpADC_Common = ADC_COMMON_REGISTER(hadc);
+
+    //     /* if ADC1 Channel_18 is selected for VBAT Channel ennable VBATE */
+    //     // if ((ADC1 == ADC1) && (ADC_CHANNEL_VBAT == ADC_CHANNEL_VBAT))
+    //     {
+    //         /* Disable the TEMPSENSOR channel in case of using board with multiplixed ADC_CHANNEL_VBAT & ADC_CHANNEL_TEMPSENSOR*/
+    //         // if ((uint16_t)ADC_CHANNEL_TEMPSENSOR == (uint16_t)ADC_CHANNEL_VBAT)
+    //         // {
+    //         //     ADC1_COMMON->CCR &= ~ADC_CCR_TSVREFE;
+    //         // }
+    //         /* Enable the VBAT channel*/
+    //         ADC1_COMMON->CCR |= ADC_CCR_VBATE;
+    //     }
+    // }
+
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    // sConfig.Channel = ADC_CHANNEL_5;
+    // sConfig.Rank = 6;
+    //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
+    {
+        /* ADC_Channel include in ADC_Channel_[0..9] */
+        {
+            /* Clear the old sample time */
+            ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_5);
+            /* Set the new sample time */
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_5);
+        }
+
+        /* For Rank 1 to 6 */
         {
             /* Clear the old SQx bits for the selected rank */
             ADC1->SQR3 &= ~ADC_SQR3_RK(ADC_SQR3_SQ1, 6);
             /* Set the SQx bits for the selected rank */
-            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_VBAT, 6);
-        }
-
-        /* Pointer to the common control register to which is belonging hadc    */
-        /* (Depending on STM32F4 product, there may be up to 3 ADCs and 1 common */
-        /* control register)                                                    */
-        // tmpADC_Common = ADC_COMMON_REGISTER(hadc);
-
-        /* if ADC1 Channel_18 is selected for VBAT Channel ennable VBATE */
-        // if ((ADC1 == ADC1) && (ADC_CHANNEL_VBAT == ADC_CHANNEL_VBAT))
-        {
-            /* Disable the TEMPSENSOR channel in case of using board with multiplixed ADC_CHANNEL_VBAT & ADC_CHANNEL_TEMPSENSOR*/
-            // if ((uint16_t)ADC_CHANNEL_TEMPSENSOR == (uint16_t)ADC_CHANNEL_VBAT)
-            // {
-            //     ADC1_COMMON->CCR &= ~ADC_CCR_TSVREFE;
-            // }
-            /* Enable the VBAT channel*/
-            ADC1_COMMON->CCR |= ADC_CCR_VBATE;
+            ADC1->SQR3 |= ADC_SQR3_RK(ADC_CHANNEL_5, 6);
         }
     }
+
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    // sConfig.Channel = ADC_CHANNEL_6;
+    // sConfig.Rank = 7;
+    //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
+    {
+        /* ADC_Channel include in ADC_Channel_[0..9] */
+        {
+            /* Clear the old sample time */
+            ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_6);
+            /* Set the new sample time */
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_6);
+        }
+
+        /* For Rank 7 to 12 */
+        {
+            /* Clear the old SQx bits for the selected rank */
+            ADC1->SQR2 &= ~ADC_SQR2_RK(ADC_SQR2_SQ7, 7);
+            /* Set the SQx bits for the selected rank */
+            ADC1->SQR2 |= ADC_SQR2_RK(ADC_CHANNEL_6, 7);
+        }
+    }
+
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    // sConfig.Channel = ADC_CHANNEL_7;
+    // sConfig.Rank = 8;
+    //  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK){Error_Handler();}
+    {
+        /* ADC_Channel include in ADC_Channel_[0..9] */
+        {
+            /* Clear the old sample time */
+            ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_7);
+            /* Set the new sample time */
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_7);
+        }
+
+        /* For Rank 7 to 12 */
+        {
+            /* Clear the old SQx bits for the selected rank */
+            ADC1->SQR2 &= ~ADC_SQR2_RK(ADC_SQR2_SQ7, 8);
+            /* Set the SQx bits for the selected rank */
+            ADC1->SQR2 |= ADC_SQR2_RK(ADC_CHANNEL_7, 8);
+        }
+    }
+
 }
 
 /* USER CODE BEGIN ADC1_Init 2 */
@@ -716,7 +817,8 @@ void MY_ADC_Start_DMA(void)
         ((ADC1->SR) = ~(ADC_FLAG_EOC | ADC_FLAG_OVR));
         /* Enable ADC overrun interrupt */
         //__HAL_ADC_ENABLE_IT(hadc, ADC_IT_OVR);
-        ((ADC1->CR1) |= (ADC_IT_OVR));
+        ((ADC1->CR1) |= (ADC_IT_EOC | ADC_IT_OVR)); //  ((ADC1->CR1) |= (ADC_IT_OVR));
+        
         /* Enable ADC DMA mode */
         ADC1->CR2 |= ADC_CR2_DMA;
         /* Start the DMA channel */
@@ -772,10 +874,10 @@ void MY_ADC_Start_DMA(void)
         
         /* if instance of handle correspond to ADC1 and  no external trigger present enable software conversion of regular channels */
         //if ((ADC1->CR2 & ADC_CR2_EXTEN) == RESET)
-        {
-            /* Enable the selected ADC software conversion for regular group */
-            ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
-        }
+        // {
+        //     /* Enable the selected ADC software conversion for regular group */
+        //     ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+        // }
         
     }
     else
@@ -856,7 +958,7 @@ void MY_ADC_DMAConvCplt(bool CT)
 //       hadc->DMA_Handle->XferErrorCallback(hdma);
 //     }
 //   }
-    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+//    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
     
     //__HAL_RCC_ADC1_CLK_DISABLE();
     /* частота семплирования:
@@ -868,7 +970,19 @@ void MY_ADC_DMAConvCplt(bool CT)
         частота прерывания полубуфера = 444.87 гц
         
     */
-    static uint32_t temp[ADC_CHENNAL] = {0,0,0,0,0,0};
+
+    /* частота семплирования:
+        частота PCLK2 = 82MHz
+        частота тактирования ADC:  82000000/8 = 10250000
+        тактов на канал 144+12 = 156
+        частота оцифровки ADC /156 = 65705 гц 
+        частота оцифровки канала /8 = 8213 гц
+        частота прерывания полубуфера = 1026 гц
+        
+    */
+
+
+    static uint32_t temp[ADC_CHENNAL] = {0,0,0,0,0,0,0,0};
     for(int i=0; i< LENGHT_BUFF; i+=ADC_CHENNAL )
     {
         temp[0] += uhADCxConvertedValue[ CT ? 0:1 ][i+0];
@@ -877,6 +991,8 @@ void MY_ADC_DMAConvCplt(bool CT)
         temp[3] += uhADCxConvertedValue[ CT ? 0:1 ][i+3];
         temp[4] += uhADCxConvertedValue[ CT ? 0:1 ][i+4];
         temp[5] += uhADCxConvertedValue[ CT ? 0:1 ][i+5];
+        temp[6] += uhADCxConvertedValue[ CT ? 0:1 ][i+6];
+        temp[7] += uhADCxConvertedValue[ CT ? 0:1 ][i+7];
     }
     if( CT ){
         ADCxConvertedValue[0]=temp[0];
@@ -885,12 +1001,16 @@ void MY_ADC_DMAConvCplt(bool CT)
         ADCxConvertedValue[3]=temp[3];
         ADCxConvertedValue[4]=temp[4];
         ADCxConvertedValue[5]=temp[5];
+        ADCxConvertedValue[6]=temp[6];
+        ADCxConvertedValue[7]=temp[7];
         temp[0]=0;
         temp[1]=0;
         temp[2]=0;
         temp[3]=0;
         temp[4]=0;
         temp[5]=0;
+        temp[6]=0;
+        temp[7]=0;
     }
     //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
 }

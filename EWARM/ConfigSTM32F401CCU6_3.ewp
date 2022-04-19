@@ -1136,6 +1136,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\spi.c</name>
+                    <excluded>
+                        <configuration>ConfigSTM32F401CCU6_3</configuration>
+                    </excluded>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\stm32f4xx_hal_msp.c</name>
@@ -1151,6 +1154,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\stm32f4xx_it.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Core\Src\tim.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\usart.c</name>

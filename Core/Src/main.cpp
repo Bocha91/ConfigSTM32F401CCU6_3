@@ -23,7 +23,8 @@
 #include "crc.h"
 #include "dma.hpp"
 #include "rtc.h"
-#include "spi.h"
+#include "tim.h"
+//#include "spi.h"
 #include "usart.hpp"
 #include "usb_device.h"
 #include "gpio.h"
@@ -102,7 +103,7 @@ int main(void)
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
-    MX_SPI1_Init();
+    //MX_SPI1_Init();
 
     MX_DMA_Init();
     iKPYT_ADC1_Init(); // MX_ADC1_Init();
@@ -110,6 +111,7 @@ int main(void)
     MX_RTC_Init();
     // MX_USART1_UART_Init();
     Init_USART1();
+    MX_TIM3_Init();
     /* USER CODE BEGIN 2 */
 
     /* USER CODE END 2 */

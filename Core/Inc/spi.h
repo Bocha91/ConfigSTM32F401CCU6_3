@@ -31,7 +31,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-
+#if 0
 extern SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN Private defines */
@@ -39,7 +39,7 @@ extern SPI_HandleTypeDef hspi1;
 /* USER CODE END Private defines */
 
 void MX_SPI1_Init(void);
-
+#endif 
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

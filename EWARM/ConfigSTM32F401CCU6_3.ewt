@@ -1443,9 +1443,6 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\adc.cpp</name>
-                    <configuration>
-                        <name>ConfigSTM32F401CCU6_3</name>
-                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\crc.c</name>
@@ -1488,6 +1485,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\stm32f4xx_it.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Core\Src\tim.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\usart.c</name>

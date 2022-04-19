@@ -23,7 +23,7 @@
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+#if 0
 SPI_HandleTypeDef hspi1;
 
 /* SPI1 init function */
@@ -115,7 +115,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
   /* USER CODE END SPI1_MspDeInit 1 */
   }
 }
-
+#endif
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

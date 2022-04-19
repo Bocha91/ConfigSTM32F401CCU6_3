@@ -58,6 +58,7 @@
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern DMA_HandleTypeDef hdma_adc1;
 extern ADC_HandleTypeDef hadc1;
+extern TIM_HandleTypeDef htim3;
 extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim1;
 
@@ -181,11 +182,32 @@ void RCC_IRQHandler(void)
  */
 void ADC_IRQHandler(void)
 {
-    /* USER CODE BEGIN ADC_IRQn 0 */
+    // uint32_t tmp1 = 0U, tmp2 = 0U;
+    
+    // uint32_t tmp_sr = ADC1->SR;
+    // uint32_t tmp_cr1 = ADC1->CR1;
 
+    // tmp1 = tmp_sr & ADC_FLAG_EOC;
+    // tmp2 = tmp_cr1 & ADC_IT_EOC;
+    // /* Check End of conversion flag for regular channels */
+    // if(tmp1 && tmp2)
+    // {
+    //     (TIM3->CR1 &= ~(TIM_CR1_CEN));
+    //     /* Clear regular group conversion flag */
+    //     ADC1->SR = ~(ADC_FLAG_STRT | ADC_FLAG_EOC);
+    // }
+
+    
+    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+    
+    
+    /* USER CODE BEGIN ADC_IRQn 0 */
+    //DMA2_Stream0->CR &= ~(DMA_SxCR_EN);
+    //(ADC1->CR2 &= ~ADC_CR2_ADON);
     /* USER CODE END ADC_IRQn 0 */
     //HAL_ADC_IRQHandler(&hadc1);
-    MY_ADC_IRQHandler();
+
+//    MY_ADC_IRQHandler();
     /* USER CODE BEGIN ADC_IRQn 1 */
 
     /* USER CODE END ADC_IRQn 1 */
@@ -204,6 +226,22 @@ void TIM1_UP_TIM10_IRQHandler(void)
 
     /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+  //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
+
 
 /**
  * @brief This function handles USART1 global interrupt.
@@ -229,6 +267,7 @@ void DMA2_Stream0_IRQHandler(void)
 
     /* USER CODE END DMA2_Stream0_IRQn 0 */
     //HAL_DMA_IRQHandler(&hdma_adc1);
+    //DMA2_Stream0->CR &= ~(DMA_SxCR_EN);
     MY_DMA_IRQHandler();
 
     /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */

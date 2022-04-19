@@ -57,6 +57,8 @@ extern "C" {
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ADC_SAMPLING_RATE 1000
+
 #define LED_GREEN_BOARD_Pin GPIO_PIN_13
 #define LED_GREEN_BOARD_GPIO_Port GPIOC
 #define KEY_BOARD_Pin GPIO_PIN_0
@@ -67,8 +69,17 @@ extern "C" {
 #define RIGHT_RESISTOR_GPIO_Port GPIOA
 #define BRASLET_Pin GPIO_PIN_3
 #define BRASLET_GPIO_Port GPIOA
-#define SHUP_Pin GPIO_PIN_4
-#define SHUP_GPIO_Port GPIOA
+//#define SHUP_Pin GPIO_PIN_4
+//#define SHUP_GPIO_Port GPIOA
+#define TREM1_Pin GPIO_PIN_4
+#define TREM1_GPIO_Port GPIOA
+#define TREM2_Pin GPIO_PIN_5
+#define TREM2_GPIO_Port GPIOA
+#define TREM3_Pin GPIO_PIN_6
+#define TREM3_GPIO_Port GPIOA
+#define TREM4_Pin GPIO_PIN_7
+#define TREM4_GPIO_Port GPIOA
+
 #define LED_RED_Pin GPIO_PIN_0
 #define LED_RED_GPIO_Port GPIOB
 #define KEY_UP_Pin GPIO_PIN_14

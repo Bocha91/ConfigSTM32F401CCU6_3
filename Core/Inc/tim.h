@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    adc.h
+  * @file    tim.h
   * @brief   This file contains all the function prototypes for
-  *          the adc.c file
+  *          the tim.c file
   ******************************************************************************
   * @attention
   *
@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __TIM_H__
+#define __TIM_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,13 +32,13 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern ADC_HandleTypeDef hadc1;
+extern TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-//void MX_ADC1_Init(void);
+void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -48,16 +48,5 @@ extern ADC_HandleTypeDef hadc1;
 }
 #endif
 
-extern void iKPYT_ADC1_Init(void);
-extern void MY_ADC_Start_DMA(void);
-
-//const uint32_t ADC_SAMPLING_RATE = 1000;
-
-const uint16_t ADC_CHENNAL = 8;
-const uint16_t ADC_SAMPLES = 8;
-const uint16_t LENGHT_BUFF = ADC_CHENNAL * ADC_SAMPLES; //NbrOfConversion*8; 
-
-extern uint16_t ADCxConvertedValue[ADC_CHENNAL];
-
-#endif /* __ADC_H__ */
+#endif /* __TIM_H__ */
 
