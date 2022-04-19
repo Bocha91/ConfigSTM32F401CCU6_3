@@ -1,0 +1,21 @@
+{
+    "iar.enabled": true,
+    "iarPicker.enabled": true,
+    "C_Cpp.errorSquiggles": "EnabledIfIncludesResolve",
+
+    "files.exclude": {
+        "**/.h_": true,
+        "**/.c_": true,
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "main.c": true,
+        "adc.c": true,
+    }
+
+}
+
+

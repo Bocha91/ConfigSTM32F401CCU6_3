@@ -1,0 +1,58 @@
+{
+    "configurations": [
+        {
+            "name": "ARMv7",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Core/Inc",
+                "${workspaceFolder}/USB_DEVICE/App",
+                "${workspaceFolder}/USB_DEVICE/Target",
+                "${workspaceFolder}/Gsm_Lib",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+                "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/include",
+                "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+                "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/portable/IAR/ARM_CM4F",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
+                "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Include",
+                "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/c",
+                "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/c/aarch32",
+                "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/cpp",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "__ICCARM__",
+                "__IAR_SYSTEMS_ICC__=9",
+                "__intrinsic=",
+                "__nounwind=",
+                "__noreturn=",
+                "__INT8_T_TYPE__=int8_t",
+                "__INT16_T_TYPE__=int16_t",
+                "__INT32_T_TYPE__=int32_t",
+                "__INT64_T_TYPE__=int64_t",
+                "__UINT8_T_TYPE__=uint8_t",
+                "__UINT16_T_TYPE__=uint16_t",
+                "__UINT32_T_TYPE__=uint32_t",
+                "__UINT64_T_TYPE__=uint64_t",
+
+                "USE_HAL_DRIVER",
+                "STM32F401xC",
+                "STM32_THREAD_SAFE_STRATEGY=4",
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c99",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "${default}",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "configurationProvider": "ChristofferRingtved.iar"
+        }
+    ],
+    "version": 4
+}

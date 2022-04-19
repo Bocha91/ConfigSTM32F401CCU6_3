@@ -1,3 +1,10 @@
+# My back
+*.h_
+*.c_
+# IAR 
+EWARM/settings/
+EWARM/ConfigSTM32F401CCU6_3/
+
 # Prerequisites
 *.d
 
