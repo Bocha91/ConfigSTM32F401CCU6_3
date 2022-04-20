@@ -287,8 +287,8 @@ void StartScanTask02(void *argument)
             str.Write(',');
         }
         
-        if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 3*16)
-        ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 3*16) 
+        if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 4*16)
+        ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 4*16) 
         ||  (str.GetCount() > 4) // если кнопки изменились
           )
         {

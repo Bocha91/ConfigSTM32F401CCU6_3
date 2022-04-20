@@ -207,7 +207,7 @@ void ADC_IRQHandler(void)
     /* USER CODE END ADC_IRQn 0 */
     //HAL_ADC_IRQHandler(&hadc1);
 
-//    MY_ADC_IRQHandler();
+    MY_ADC_IRQHandler();
     /* USER CODE BEGIN ADC_IRQn 1 */
 
     /* USER CODE END ADC_IRQn 1 */

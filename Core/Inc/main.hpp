@@ -57,7 +57,8 @@ extern "C" {
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define ADC_SAMPLING_RATE 1000
+//#define ADC_SAMPLING_RATE 1000
+#define ADC_TIMER_RATE  true
 
 #define LED_GREEN_BOARD_Pin GPIO_PIN_13
 #define LED_GREEN_BOARD_GPIO_Port GPIOC
@@ -102,6 +103,8 @@ extern "C" {
 }
 #endif
 
+
+static const uint32_t ADC_SAMPLING_RATE = 1000;
 
 //extern void MY_ADC_Start_DMA(void);
 

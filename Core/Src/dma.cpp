@@ -151,7 +151,7 @@ void MY_DMA_IRQHandler(void)
       //     hdma->XferHalfCpltCallback(hdma);
       //   }
       // }
-      MY_ADC_DMAHalfConvCplt((DMA2_Stream0->CR & DMA_SxCR_CT) == RESET);
+      MY_ADC_DMAHalfConvCplt(DMA2_Stream0->CR & DMA_SxCR_CT);
 
     }
   }
@@ -233,7 +233,7 @@ void MY_DMA_IRQHandler(void)
       //     hdma->XferCpltCallback(hdma);
       //   }
       // }
-      MY_ADC_DMAConvCplt((((DMA2_Stream0->CR) & (uint32_t)(DMA_SxCR_DBM)) != RESET));
+      MY_ADC_DMAConvCplt( DMA2_Stream0->CR & DMA_SxCR_CT );
     }
   }
   

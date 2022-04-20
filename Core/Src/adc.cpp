@@ -50,12 +50,16 @@ void MX_ADC1_Init(void)
     hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4; //ADC_CLOCK_SYNC_PCLK_DIV8;
     hadc1.Init.Resolution = ADC_RESOLUTION_12B;
     hadc1.Init.ScanConvMode = ENABLE; //
-    hadc1.Init.ContinuousConvMode = DISABLE;
     hadc1.Init.DiscontinuousConvMode = DISABLE;
-    //hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    //hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+#if ADC_TIMER_RATE
+    hadc1.Init.ContinuousConvMode = DISABLE;
+    hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+#else
+    hadc1.Init.ContinuousConvMode = ENABLE;
     hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
     hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T3_TRGO;
+#endif
     hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
     hadc1.Init.NbrOfConversion = ADC_CHENNAL;
     hadc1.Init.DMAContinuousRequests = ENABLE;
@@ -70,7 +74,7 @@ void MX_ADC1_Init(void)
     sConfig.Channel = ADC_CHANNEL_1;
     sConfig.Rank = 1;
     //sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
-    sConfig.SamplingTime = ADC_SAMPLETIME_144CYCLES;
+    sConfig.SamplingTime = ADC_SAMPLETIME_CYCLES;
     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
         Error_Handler();
@@ -440,6 +444,7 @@ void iKPYT_ADC1_Init(void)
 
             /* Enable external trigger if trigger selection is different of software start. */
             // if (hadc->Init.ExternalTrigConv != ADC_SOFTWARE_START)
+#if ADC_TIMER_RATE
             // {
                 /* Select external trigger to start conversion */
                 ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
@@ -450,16 +455,19 @@ void iKPYT_ADC1_Init(void)
                 ADC1->CR2 |= ADC_EXTERNALTRIGCONVEDGE_RISING;
             // }
             // else
+#else
             // {
             //     /* Reset the external trigger */
-            //     ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
-            //     ADC1->CR2 &= ~(ADC_CR2_EXTEN);
+                ADC1->CR2 &= ~(ADC_CR2_EXTSEL);
+                ADC1->CR2 &= ~(ADC_CR2_EXTEN);
             // }
-
+#endif
             /* Enable or disable ADC continuous conversion mode */
             ADC1->CR2 &= ~(ADC_CR2_CONT);
-            //ADC1->CR2 |= ADC_CR2_CONTINUOUS((uint32_t)ENABLE);
-
+#if ADC_TIMER_RATE
+#else
+            ADC1->CR2 |= ADC_CR2_CONTINUOUS((uint32_t)ENABLE);
+#endif
             // if (hadc->Init.DiscontinuousConvMode != DISABLE)
             // {
             //     assert_param(IS_ADC_REGULAR_DISC_NUMBER(hadc->Init.NbrOfDiscConversion));
@@ -503,7 +511,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_1);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_1);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_1);
         }
 
         /* For Rank 1 to 6 */
@@ -526,7 +534,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_2);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_2);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_2);
         }
 
         /* For Rank 1 to 6 */
@@ -549,7 +557,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_3);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_3);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_3);
         }
 
         /* For Rank 1 to 6 */
@@ -573,7 +581,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR1 &= ~ADC_SMPR1(ADC_SMPR1_SMP10, ADC_CHANNEL_VREFINT);
             /* Set the new sample time */
-            ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_VREFINT);
+            ADC1->SMPR1 |= ADC_SMPR1(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_VREFINT);
         }
 
         /* For Rank 1 to 6 */
@@ -604,7 +612,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_4);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_4);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_4);
         }
 
         /* For Rank 1 to 6 */
@@ -669,7 +677,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_5);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_5);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_5);
         }
 
         /* For Rank 1 to 6 */
@@ -692,7 +700,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_6);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_6);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_6);
         }
 
         /* For Rank 7 to 12 */
@@ -715,7 +723,7 @@ void iKPYT_ADC1_Init(void)
             /* Clear the old sample time */
             ADC1->SMPR2 &= ~ADC_SMPR2(ADC_SMPR2_SMP0, ADC_CHANNEL_7);
             /* Set the new sample time */
-            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_144CYCLES, ADC_CHANNEL_7);
+            ADC1->SMPR2 |= ADC_SMPR2(ADC_SAMPLETIME_CYCLES, ADC_CHANNEL_7);
         }
 
         /* For Rank 7 to 12 */
@@ -817,8 +825,11 @@ void MY_ADC_Start_DMA(void)
         ((ADC1->SR) = ~(ADC_FLAG_EOC | ADC_FLAG_OVR));
         /* Enable ADC overrun interrupt */
         //__HAL_ADC_ENABLE_IT(hadc, ADC_IT_OVR);
-        ((ADC1->CR1) |= (ADC_IT_EOC | ADC_IT_OVR)); //  ((ADC1->CR1) |= (ADC_IT_OVR));
-        
+#if 1
+        ((ADC1->CR1) |= (ADC_IT_OVR));
+#else
+        ((ADC1->CR1) |= (ADC_IT_EOC | ADC_IT_OVR)); 
+#endif       
         /* Enable ADC DMA mode */
         ADC1->CR2 |= ADC_CR2_DMA;
         /* Start the DMA channel */
@@ -854,14 +865,14 @@ void MY_ADC_Start_DMA(void)
                     /* Configure DMA Stream source address */
                     DMA2_Stream0->PAR = (uint32_t)&(ADC1->DR); //SrcAddress;
                     /* Configure DMA Stream destination address */
-                    DMA2_Stream0->M0AR = (uint32_t)&uhADCxConvertedValue[0][0]; //DstAddress;
-                    DMA2_Stream0->M1AR = (uint32_t)&uhADCxConvertedValue[1][0]; //DstAddress;
+                    DMA2_Stream0->M0AR = (uint32_t)&uhADCxConvertedValue[1][0]; //DstAddress;
+                    DMA2_Stream0->M1AR = (uint32_t)&uhADCxConvertedValue[0][0]; //DstAddress;
                 }
             }
             /* Clear all interrupt flags at correct offset within the register */
             REGS->IFCR = (0x3FU << 0U);//regs->IFCR = 0x3FU << hdma->StreamIndex;
             /* Enable Common interrupts*/
-            DMA2_Stream0->CR |= (DMA_IT_TC | DMA_IT_TE | DMA_IT_DME);
+            DMA2_Stream0->CR |= (DMA_IT_TC /*| DMA_IT_HT*/ | DMA_IT_TE | DMA_IT_DME);
             
             //if (hdma->XferHalfCpltCallback != NULL)
             // {
@@ -875,8 +886,11 @@ void MY_ADC_Start_DMA(void)
         /* if instance of handle correspond to ADC1 and  no external trigger present enable software conversion of regular channels */
         //if ((ADC1->CR2 & ADC_CR2_EXTEN) == RESET)
         // {
-        //     /* Enable the selected ADC software conversion for regular group */
-        //     ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+#if ADC_TIMER_RATE
+#else
+            /* Enable the selected ADC software conversion for regular group */
+            ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+#endif        
         // }
         
     }
@@ -958,41 +972,45 @@ void MY_ADC_DMAConvCplt(bool CT)
 //       hadc->DMA_Handle->XferErrorCallback(hdma);
 //     }
 //   }
-//    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
     
     //__HAL_RCC_ADC1_CLK_DISABLE();
     /* частота семплирования:
-        частота PCLK2 = 82MHz
-        частота тактирования ADC:  82000000/8 = 10250000
+        частота PCLK2 = 84MHz
+        частота тактирования ADC:  84000000/8 = 10250000
         тактов на канал 480+12 = 492 или 480 ? 
         частота оцифровки ADC /480 = 21354 гц 
-        частота оцифровки канала /6 = 3559 гц
-        частота прерывания полубуфера = 444.87 гц
+        частота оцифровки канала /6 = 3559 гц     1333.94
+        частота прерывания полубуфера = 444.87 гц  
         
     */
 
     /* частота семплирования:
         частота PCLK2 = 82MHz
-        частота тактирования ADC:  82000000/8 = 10250000
-        тактов на канал 144+12 = 156
-        частота оцифровки ADC /156 = 65705 гц 
-        частота оцифровки канала /8 = 8213 гц
-        частота прерывания полубуфера = 1026 гц
-        
+        частота тактирования ADC:  84006720/4 = 21001680
+        тактов на канал 144+12 = 156 (152)
+        частота оцифровки ADC /156 = 134626 гц  
+        частота оцифровки N каналов  /8 = 16828  (8414)
+                                          17795                            3 clk
+                                          (8414) - частота ADC_Interrupt 87510.3
+                                           1051  - частота DMA_Interrupt 10938
+        частота прерывания полубуфера /8 = 2053 гц
+        25.0020 МГц -кварц померен моим осциллографом
+        PLL  (((25002000/25)*336)/4) = 84006720
     */
 
 
     static uint32_t temp[ADC_CHENNAL] = {0,0,0,0,0,0,0,0};
     for(int i=0; i< LENGHT_BUFF; i+=ADC_CHENNAL )
     {
-        temp[0] += uhADCxConvertedValue[ CT ? 0:1 ][i+0];
-        temp[1] += uhADCxConvertedValue[ CT ? 0:1 ][i+1];
-        temp[2] += uhADCxConvertedValue[ CT ? 0:1 ][i+2];
-        temp[3] += uhADCxConvertedValue[ CT ? 0:1 ][i+3];
-        temp[4] += uhADCxConvertedValue[ CT ? 0:1 ][i+4];
-        temp[5] += uhADCxConvertedValue[ CT ? 0:1 ][i+5];
-        temp[6] += uhADCxConvertedValue[ CT ? 0:1 ][i+6];
-        temp[7] += uhADCxConvertedValue[ CT ? 0:1 ][i+7];
+        temp[0] += uhADCxConvertedValue[ CT ][i+0];
+        temp[1] += uhADCxConvertedValue[ CT ][i+1];
+        temp[2] += uhADCxConvertedValue[ CT ][i+2];
+        temp[3] += uhADCxConvertedValue[ CT ][i+3];
+        temp[4] += uhADCxConvertedValue[ CT ][i+4];
+        temp[5] += uhADCxConvertedValue[ CT ][i+5];
+        temp[6] += uhADCxConvertedValue[ CT ][i+6];
+        temp[7] += uhADCxConvertedValue[ CT ][i+7];
     }
     if( CT ){
         ADCxConvertedValue[0]=temp[0];

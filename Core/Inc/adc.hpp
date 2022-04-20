@@ -35,7 +35,7 @@ extern "C" {
 extern ADC_HandleTypeDef hadc1;
 
 /* USER CODE BEGIN Private defines */
-
+#define ADC_SAMPLETIME_CYCLES ADC_SAMPLETIME_144CYCLES
 /* USER CODE END Private defines */
 
 //void MX_ADC1_Init(void);
