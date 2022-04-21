@@ -58,6 +58,7 @@ const uint16_t ADC_SAMPLES = 8;
 const uint16_t LENGHT_BUFF = ADC_CHENNAL * ADC_SAMPLES; //NbrOfConversion*8; 
 
 extern uint16_t ADCxConvertedValue[ADC_CHENNAL];
+extern __IO uint8_t ADCxCOMPLIT;
 
 #endif /* __ADC_H__ */
 

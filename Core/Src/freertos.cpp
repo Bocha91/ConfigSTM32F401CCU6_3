@@ -250,26 +250,26 @@ void StartScanTask02(void *argument)
 {
     static uint8_t scan[4]={0,0,0,0};
     static int krutilka[2]={0,0};
+    static int GSR=0;
     /* USER CODE BEGIN StartScanTask02 */
     /* Infinite loop */
     for (;;)
     {
-        // HAL_GPIO_ReadPin(KEY_ESC_GPIO_Port, (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin));
+        osDelay(1);  // 1000 Гц
+        static int del5 = 0;
+        if(++del5>=25){ // 40Гц
 
-        osDelay(25);
+            del5 = 0;
+            uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin));
+            scan[1] = scan[0];
+            scan[2] = scan[1];
+            scan[3] = scan[2];
+            scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30);
 
-        uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin));
-
-        scan[1] = scan[0];
-        scan[2] = scan[1];
-        scan[3] = scan[2];
-        scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30);
-
-        uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
-        uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
-        key = (old_key & up) | down;
-
-
+            uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
+            uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
+            key = (old_key & up) | down;
+        }
         // *************** out *************
         static _MyString<64>  str;
         str.Clear();
@@ -282,30 +282,63 @@ void StartScanTask02(void *argument)
             str.Write(',');
             str.uint8toH(key);
             str.Write(',');
+
+            old_key = key;
         }else{
             str.Write(',');
             str.Write(',');
         }
         
-        if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 4*16)
-        ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 4*16) 
-        ||  (str.GetCount() > 4) // если кнопки изменились
-          )
+        if(ADCxCOMPLIT == 1){  // 100 гц
+            ADCxCOMPLIT = 0;
+
+//HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+
+            if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 256)
+            ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 256) 
+            ||  (str.GetCount() > 5) // если кнопки изменились
+            )
+            {
+                str.uint16toH(ADCxConvertedValue[0]/16);
+                str.Write(',');
+                str.uint16toH(ADCxConvertedValue[1]/16);
+                str.Write(',');
+                krutilka[0]=ADCxConvertedValue[0];
+                krutilka[1]=ADCxConvertedValue[1];
+            }
+
+            static int GSR_count = 0;
+            GSR += ADCxConvertedValue[2];
+            if( ++GSR_count >= 10 )
+            {
+                if((str.GetCount() < 5)) // если кнопки изменились
+                {
+                    str.Write(',');
+                    str.Write(',');
+                }
+                str.uint16toH(GSR/16);
+                GSR_count=0;
+                GSR=0;
+
+HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+
+            }
+        }else  if((str.GetCount() > 5)) // если кнопки изменились
         {
             str.uint16toH(ADCxConvertedValue[0]/16);
             str.Write(',');
             str.uint16toH(ADCxConvertedValue[1]/16);
+            str.Write(',');
         }
-        if(str.GetCount() > 4)
+
+        if(str.GetCount() > 5)
         {
             str.Writes("]\n\r");
             com1.Puts(str.Reads());
         }
-        // *************** out *************
-        old_key = key;
 
-        krutilka[0]=ADCxConvertedValue[0];
-        krutilka[1]=ADCxConvertedValue[1];
+        // *************** out *************
+
 
     }
     /* USER CODE END StartScanTask02 */

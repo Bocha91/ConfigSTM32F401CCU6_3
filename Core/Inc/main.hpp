@@ -104,7 +104,7 @@ extern "C" {
 #endif
 
 
-static const uint32_t ADC_SAMPLING_RATE = 1000;
+static const uint32_t ADC_SAMPLING_RATE = 1600;
 
 //extern void MY_ADC_Start_DMA(void);
 

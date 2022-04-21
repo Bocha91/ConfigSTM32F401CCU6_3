@@ -22,8 +22,8 @@
 
 /* USER CODE BEGIN 0 */
 uint16_t ADCxConvertedValue[ADC_CHENNAL];
-
 __IO uint16_t uhADCxConvertedValue[2][LENGHT_BUFF];
+__IO uint8_t ADCxCOMPLIT = 0;
 
 /* USER CODE END 0 */
 #if 0
@@ -972,7 +972,7 @@ void MY_ADC_DMAConvCplt(bool CT)
 //       hadc->DMA_Handle->XferErrorCallback(hdma);
 //     }
 //   }
-    HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+    // HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
     
     //__HAL_RCC_ADC1_CLK_DISABLE();
     /* частота семплирования:
@@ -990,11 +990,10 @@ void MY_ADC_DMAConvCplt(bool CT)
         частота тактирования ADC:  84006720/4 = 21001680
         тактов на канал 144+12 = 156 (152)
         частота оцифровки ADC /156 = 134626 гц  
-        частота оцифровки N каналов  /8 = 16828  (8414)
-                                          17795                            3 clk
-                                          (8414) - частота ADC_Interrupt 87510.3
-                                           1051  - частота DMA_Interrupt 10938
-        частота прерывания полубуфера /8 = 2053 гц
+        частота оцифровки N каналов  /8 = 16828                         3 clk  
+                                        (8414) - частота ADC_Interrupt 87510.3
+                                         1000  - частота DMA_Interrupt 10938
+        частота прерывания полубуфера /8 = 62.5 гц  100  
         25.0020 МГц -кварц померен моим осциллографом
         PLL  (((25002000/25)*336)/4) = 84006720
     */
@@ -1029,6 +1028,7 @@ void MY_ADC_DMAConvCplt(bool CT)
         temp[5]=0;
         temp[6]=0;
         temp[7]=0;
+        ADCxCOMPLIT = 1;
     }
     //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
 }
@@ -1050,6 +1050,7 @@ void MY_ADC_DMAHalfConvCplt(bool CT)
 
     /* Disable the half transfer interrupt */
     DMA2_Stream0->CR &= ~(DMA_IT_HT);
+    //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
     Error_Handler();
 }
 
