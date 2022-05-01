@@ -250,7 +250,7 @@ void StartScanTask02(void *argument)
 {
     static uint8_t scan[4]={0,0,0,0};
     static int krutilka[2]={0,0};
-    static int GSR=0;
+    static int GSR=0, TRM[4];
     /* USER CODE BEGIN StartScanTask02 */
     /* Infinite loop */
     for (;;)
@@ -260,11 +260,11 @@ void StartScanTask02(void *argument)
         if(++del5>=25){ // 40Гц
 
             del5 = 0;
-            uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin));
+            uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin | KEY_SHUP_Pin));
             scan[1] = scan[0];
             scan[2] = scan[1];
             scan[3] = scan[2];
-            scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30);
+            scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30) | ((in >> 4) & 0x40) ;
 
             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
@@ -294,6 +294,7 @@ void StartScanTask02(void *argument)
 
 //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
 
+            // крутилки
             if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 256)
             ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 256) 
             ||  (str.GetCount() > 5) // если кнопки изменились
@@ -306,28 +307,49 @@ void StartScanTask02(void *argument)
                 krutilka[0]=ADCxConvertedValue[0];
                 krutilka[1]=ADCxConvertedValue[1];
             }
-
+            // GSR и тремор
             static int GSR_count = 0;
             GSR += ADCxConvertedValue[2];
+            TRM[0] += ADCxConvertedValue[4];
+            TRM[1] += ADCxConvertedValue[5];
+            TRM[2] += ADCxConvertedValue[6];
+            TRM[3] += ADCxConvertedValue[7];
             if( ++GSR_count >= 10 )
             {
-                if((str.GetCount() < 5)) // если кнопки изменились
+                if((str.GetCount() < 5)) // если кнопки не изменились
                 {
                     str.Write(',');
                     str.Write(',');
                 }
                 str.uint16toH(GSR/16);
+                str.Write(',');
+                str.uint16toH(TRM[3]/16);
+                str.Write(',');
+                str.uint16toH(TRM[2]/16);
+                str.Write(',');
+                str.uint16toH(TRM[1]/16);
+                str.Write(',');
+                str.uint16toH(TRM[0]/16);
+
                 GSR_count=0;
-                GSR=0;
-
+                TRM[3]=TRM[2]=TRM[1]=TRM[0]=GSR=0;
 HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
-
+            }else if(str.GetCount() > 5)  // если кнопки изменились
+            {
+                str.Write(',');
+                str.Write(',');
+                str.Write(',');
+                str.Write(',');
             }
         }else  if((str.GetCount() > 5)) // если кнопки изменились
         {
             str.uint16toH(ADCxConvertedValue[0]/16);
             str.Write(',');
             str.uint16toH(ADCxConvertedValue[1]/16);
+            str.Write(',');
+            str.Write(',');
+            str.Write(',');
+            str.Write(',');
             str.Write(',');
         }
 

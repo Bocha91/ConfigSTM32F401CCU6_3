@@ -95,6 +95,8 @@ extern "C" {
 #define KEY_LEFT_GPIO_Port GPIOB
 #define KEY_RIGHT_Pin GPIO_PIN_7
 #define KEY_RIGHT_GPIO_Port GPIOB
+#define KEY_SHUP_Pin GPIO_PIN_10
+#define KEY_SHUP_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
