@@ -221,6 +221,7 @@
                     <state>USE_HAL_DRIVER</state>
                     <state>STM32F401xC</state>
                     <state>STM32_THREAD_SAFE_STRATEGY=4</state>
+                    <state>VERSION=1</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>

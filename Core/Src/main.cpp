@@ -112,6 +112,7 @@ int main(void)
     // MX_USART1_UART_Init();
     Init_USART1();
     MX_TIM3_Init();
+    MX_TIM1_Init();
     /* USER CODE BEGIN 2 */
 
     /* USER CODE END 2 */
@@ -134,7 +135,13 @@ int main(void)
     }
     /* USER CODE END 3 */
 }
-
+/*
+void setTim1(TIM_TypeDef *TIMx,int16_t period,int16_t compe)
+{
+    TIM1->ARR = (uint32_t)period;
+    TIM1->CCR2 = (uint32_t)compe;
+}
+*/
 /**
  * @brief System Clock Configuration
  * @retval None
@@ -165,7 +172,8 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
-
+    //SystemCoreClockUpdate();
+        
     /** Initializes the CPU, AHB and APB buses clocks
      */
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
@@ -186,7 +194,7 @@ void SystemClock_Config(void)
 
 /**
  * @brief  Period elapsed callback in non blocking mode
- * @note   This function is called  when TIM10 interrupt took place, inside
+ * @note   This function is called  when TIM4 interrupt took place, inside
  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
  * a global variable "uwTick" used as application time base.
  * @param  htim : TIM handle
@@ -197,7 +205,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     /* USER CODE BEGIN Callback 0 */
 
     /* USER CODE END Callback 0 */
-    if (htim->Instance == TIM10)
+    if (htim->Instance == TIM4)
     {
         HAL_IncTick();
     }
@@ -205,7 +213,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     /* USER CODE END Callback 1 */
 }
-
 
 
 #ifdef USE_FULL_ASSERT

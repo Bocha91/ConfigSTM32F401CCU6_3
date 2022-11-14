@@ -1464,8 +1464,8 @@ HAL_StatusTypeDef HAL_TIM_PWM_Start(TIM_HandleTypeDef *htim, uint32_t Channel)
   TIM_CHANNEL_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
 
   /* Enable the Capture compare channel */
-  TIM_CCxChannelCmd(htim->Instance, Channel, TIM_CCx_ENABLE);
-
+  //TIM_CCxChannelCmd(htim->Instance, Channel, TIM_CCx_ENABLE);
+  TIM_CCxChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
   if (IS_TIM_BREAK_INSTANCE(htim->Instance) != RESET)
   {
     /* Enable the main output */
@@ -1507,7 +1507,7 @@ HAL_StatusTypeDef HAL_TIM_PWM_Stop(TIM_HandleTypeDef *htim, uint32_t Channel)
   assert_param(IS_TIM_CCX_INSTANCE(htim->Instance, Channel));
 
   /* Disable the Capture compare channel */
-  TIM_CCxChannelCmd(htim->Instance, Channel, TIM_CCx_DISABLE);
+  TIM_CCxChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
 
   if (IS_TIM_BREAK_INSTANCE(htim->Instance) != RESET)
   {
