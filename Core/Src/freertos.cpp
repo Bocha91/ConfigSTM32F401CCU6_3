@@ -257,7 +257,8 @@ void StartScanTask02(void *argument)
     {
         osDelay(1);  // 1000 Гц
         static int del5 = 0;
-        if(++del5>=25){ // 40Гц
+        // if(++del5>=25){ // 40Гц фильтр 10Гц
+        if(++del5>=10){ // 100Гц фильтр 25Гц
             del5 = 0;
             uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin | KEY_SHUP_Pin));
             scan[1] = scan[0];
@@ -268,7 +269,7 @@ void StartScanTask02(void *argument)
             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
             key = (old_key & up) | down;
-        }else{
+        }/*else{
             uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & ( KEY_SHUP_Pin));
             scan[1] = scan[0];
             scan[2] = scan[1];
@@ -277,7 +278,7 @@ void StartScanTask02(void *argument)
             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
             key = (old_key & up) | down;
-        }
+        }*/
         // *************** out *************
         static _MyString<128>  str;
         str.Clear();
