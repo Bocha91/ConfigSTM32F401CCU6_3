@@ -17,6 +17,7 @@
                 "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc",
                 "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
                 "${workspaceFolder}/Drivers/CMSIS/Include",
+                "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
                 "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/c",
                 "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/c/aarch32",
                 "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/arm/inc/cpp",
@@ -36,13 +37,13 @@
                 "__UINT16_T_TYPE__=uint16_t",
                 "__UINT32_T_TYPE__=uint32_t",
                 "__UINT64_T_TYPE__=uint64_t",
-
                 "USE_HAL_DRIVER",
                 "STM32F401xC",
                 "STM32_THREAD_SAFE_STRATEGY=4",
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "VERSION=3"
             ],
             "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
             "cStandard": "c99",
@@ -51,7 +52,7 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true
             },
-            "configurationProvider": "ChristofferRingtved.iar"
+            "configurationProvider": "ChristofferRingtved.iar",
         }
     ],
     "version": 4

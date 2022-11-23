@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "path": "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112",
+    "path": "C:/Program Files/IAR Systems/IAR EW for ARM 9.20.4-47112/",
     "project": "E:/PCAD/Nobilis/UPDK-MK//Soft/ConfigSTM32F401CCU6_3/EWARM/ConfigSTM32F401CCU6_3.ewp",
     "config": "Debug",
     "iarPicker.enabled": true
