@@ -269,6 +269,8 @@ void StartScanTask02(void *argument)
             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
             key = (old_key & up) | down;
+            //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+            HAL_GPIO_WritePin(LED_GREEN_BOARD_GPIO_Port,LED_GREEN_BOARD_Pin, GPIO_PinState(((~key)&0x40)>>6) );
         }/*else{
             uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & ( KEY_SHUP_Pin));
             scan[1] = scan[0];
@@ -344,7 +346,7 @@ void StartScanTask02(void *argument)
 
                 GSR_count=0;
                 TRM[3]=TRM[2]=TRM[1]=TRM[0]=GSR=0;
-HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+//HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
             }else if(str.GetCount() > 4+start)  // если кнопки изменились
             {
                 str.Write(',');
