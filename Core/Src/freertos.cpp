@@ -24,8 +24,8 @@
 #include "cmsis_os.h"
 #include "usart.hpp"
 #include "adc.hpp"
+#include "tim.h"
 #include <stdlib.h>
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -231,7 +231,7 @@ void StartDefaultTask(void *argument)
     /* Infinite loop */
     for (;;)
     {
-        //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+        // HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
         osDelay(750);
     }
     /* USER CODE END StartDefaultTask */
@@ -248,47 +248,48 @@ uint8_t key = 0, old_key = 0;
 /* USER CODE END Header_StartScanTask02 */
 void StartScanTask02(void *argument)
 {
-    static uint8_t scan[4]={0,0,0,0};
-    static int krutilka[2]={0,0};
-    static int GSR=0, TRM[4];
+    static uint8_t scan[4] = {0, 0, 0, 0};
+    static int krutilka[2] = {0, 0};
+    static int GSR = 0, TRM[4];
     /* USER CODE BEGIN StartScanTask02 */
     /* Infinite loop */
     for (;;)
     {
-        osDelay(1);  // 1000 Гц
+        osDelay(1); // 1000 Гц
         static int del5 = 0;
         // if(++del5>=25){ // 40Гц фильтр 10Гц
-        if(++del5>=10){ // 100Гц фильтр 25Гц
+        if (++del5 >= 10)
+        { // 100Гц фильтр 25Гц
             del5 = 0;
             uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & (KEY_ESC_Pin | KEY_ENTER_Pin | KEY_LEFT_Pin | KEY_RIGHT_Pin | KEY_UP_Pin | KEY_DOWN_Pin | KEY_SHUP_Pin));
             scan[1] = scan[0];
             scan[2] = scan[1];
             scan[3] = scan[2];
-            scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30) | ((in >> 4) & 0x40) ;
+            scan[0] = ((in >> 4) & 0x0F) | ((in >> 10) & 0x30) | ((in >> 4) & 0x40);
 
             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
             key = (old_key & up) | down;
-            //HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
-            HAL_GPIO_WritePin(LED_GREEN_BOARD_GPIO_Port,LED_GREEN_BOARD_Pin, GPIO_PinState(((~key)&0x40)>>6) );
-        }/*else{
-            uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & ( KEY_SHUP_Pin));
-            scan[1] = scan[0];
-            scan[2] = scan[1];
-            scan[3] = scan[2];
-            scan[0] = ((in >> 4) & 0x40) ;
-            uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
-            uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
-            key = (old_key & up) | down;
-        }*/
+            // HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+            HAL_GPIO_WritePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin, GPIO_PinState(((~key) & 0x40) >> 6));
+        } /*else{
+             uint16_t in = ~(KEY_ESC_GPIO_Port->IDR & ( KEY_SHUP_Pin));
+             scan[1] = scan[0];
+             scan[2] = scan[1];
+             scan[3] = scan[2];
+             scan[0] = ((in >> 4) & 0x40) ;
+             uint8_t down = scan[0] & scan[1] & scan[2] & scan[3];
+             uint8_t up = scan[0] | scan[1] | scan[2] | scan[3];
+             key = (old_key & up) | down;
+         }*/
         // *************** out *************
-        static _MyString<128>  str;
+        static _MyString<128> str;
         str.Clear();
         str.Write('[');
         str.uint8toH(VERSION);
         str.Write(',');
         uint8_t start = str.GetCount();
-        //[f7,ff,33f,12D] 
+        //[f7,ff,33f,12D]
         if (key != old_key)
         {
             str.uint8toH(old_key);
@@ -297,28 +298,29 @@ void StartScanTask02(void *argument)
             str.Write(',');
 
             old_key = key;
-        }else{
+        }
+        else
+        {
             str.Write(',');
             str.Write(',');
         }
-        
-        if(ADCxCOMPLIT == 1){  // 100 гц
+
+        if (ADCxCOMPLIT == 1)
+        { // 100 гц
             ADCxCOMPLIT = 0;
 
-//HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+            // HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
 
             // крутилки
-            if( (abs(krutilka[0]-ADCxConvertedValue[0]) > 256)
-            ||  (abs(krutilka[1]-ADCxConvertedValue[1]) > 256) 
-            ||  (str.GetCount() > 4+start) // если кнопки изменились
+            if ((abs(krutilka[0] - ADCxConvertedValue[0]) > 256) || (abs(krutilka[1] - ADCxConvertedValue[1]) > 256) || (str.GetCount() > 4 + start) // если кнопки изменились
             )
             {
-                str.uint16toH(ADCxConvertedValue[0]/16);
+                str.uint16toH(ADCxConvertedValue[0] / 16);
                 str.Write(',');
-                str.uint16toH(ADCxConvertedValue[1]/16);
+                str.uint16toH(ADCxConvertedValue[1] / 16);
                 str.Write(',');
-                krutilka[0]=ADCxConvertedValue[0];
-                krutilka[1]=ADCxConvertedValue[1];
+                krutilka[0] = ADCxConvertedValue[0];
+                krutilka[1] = ADCxConvertedValue[1];
             }
             // GSR и тремор
             static int GSR_count = 0;
@@ -327,38 +329,40 @@ void StartScanTask02(void *argument)
             TRM[1] += ADCxConvertedValue[5];
             TRM[2] += ADCxConvertedValue[6];
             TRM[3] += ADCxConvertedValue[7];
-            if( ++GSR_count >= 10 )
+            if (++GSR_count >= 10)
             {
-                if((str.GetCount() < 4+start)) // если кнопки не изменились
+                if ((str.GetCount() < 4 + start)) // если кнопки не изменились
                 {
                     str.Write(',');
                     str.Write(',');
                 }
-                str.uint16toH(GSR/16);
+                str.uint16toH(GSR / 16);
                 str.Write(',');
-                str.uint16toH(TRM[3]/16);
+                str.uint16toH(TRM[3] / 16);
                 str.Write(',');
-                str.uint16toH(TRM[2]/16);
+                str.uint16toH(TRM[2] / 16);
                 str.Write(',');
-                str.uint16toH(TRM[1]/16);
+                str.uint16toH(TRM[1] / 16);
                 str.Write(',');
-                str.uint16toH(TRM[0]/16);
+                str.uint16toH(TRM[0] / 16);
 
-                GSR_count=0;
-                TRM[3]=TRM[2]=TRM[1]=TRM[0]=GSR=0;
-//HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
-            }else if(str.GetCount() > 4+start)  // если кнопки изменились
+                GSR_count = 0;
+                TRM[3] = TRM[2] = TRM[1] = TRM[0] = GSR = 0;
+                // HAL_GPIO_TogglePin(LED_GREEN_BOARD_GPIO_Port, LED_GREEN_BOARD_Pin);
+            }
+            else if (str.GetCount() > 4 + start) // если кнопки изменились
             {
                 str.Write(',');
                 str.Write(',');
                 str.Write(',');
                 str.Write(',');
             }
-        }else  if((str.GetCount() > 4+start)) // если кнопки изменились
+        }
+        else if ((str.GetCount() > 4 + start)) // если кнопки изменились
         {
-            str.uint16toH(ADCxConvertedValue[0]/16);
+            str.uint16toH(ADCxConvertedValue[0] / 16);
             str.Write(',');
-            str.uint16toH(ADCxConvertedValue[1]/16);
+            str.uint16toH(ADCxConvertedValue[1] / 16);
             str.Write(',');
             str.Write(',');
             str.Write(',');
@@ -366,15 +370,13 @@ void StartScanTask02(void *argument)
             str.Write(',');
         }
 
-        if(str.GetCount() > 4+start)
+        if (str.GetCount() > 4 + start)
         {
             str.Writes("]\n\r");
             com1.Puts(str.Reads());
         }
 
         // *************** out *************
-
-
     }
     /* USER CODE END StartScanTask02 */
 }
@@ -388,17 +390,18 @@ void StartScanTask02(void *argument)
 /* USER CODE END Header_StartRxTask03 */
 void StartRxTask03(void *argument)
 {
+    static bool stop = true;
     /* USER CODE BEGIN StartRxTask03 */
     /* Infinite loop */
     com1.Rx.EnableInterrupt();
 
     for (;;)
     {
-        //HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, (com1.Get() & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+        // HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, (com1.Get() & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
         uint8_t pl = com1.Get();
-        OS_sleep( com1.WAIT(10));
-        if( com1.kbhit() != 3) 
+        OS_sleep(com1.WAIT(10));
+        if (com1.kbhit() != 3)
         {
             com1.Rx.buf.flush();
             continue;
@@ -406,12 +409,24 @@ void StartRxTask03(void *argument)
         uint8_t ph = com1.Get();
         uint8_t cl = com1.Get();
         uint8_t ch = com1.Get();
-        com1.Rx.buf.flush(); // сбросим остатки 
-        uint16_t period = ph*256+pl;
-        uint16_t compe = ch*256+cl;
-        //setTim1(period, compe);
-        TIM1->ARR = (uint32_t)period;
-        TIM1->CCR2 = (uint32_t)compe;
+        com1.Rx.buf.flush(); // сбросим остатки
+        uint16_t period = ph * 256 + pl;
+        uint16_t compe = ch * 256 + cl;
+        // setTim1(period, compe);
+        if ((period == 65535)&&(compe < 2))
+        {
+            stop = true;
+            TIM1->ARR = (uint32_t)period;
+            TIM1->CCR2 = (uint32_t)compe;
+            MX_TIM1_Stop();
+        }else{
+            if( stop ){
+                stop = false;
+                MX_TIM1_Start();
+            }
+            TIM1->ARR = (uint32_t)period;
+            TIM1->CCR2 = (uint32_t)compe;
+        }
     }
     // iKRYT
     /* USER CODE END StartRxTask03 */
@@ -429,28 +444,27 @@ void StartTxTask04(void *argument)
     /* USER CODE BEGIN StartTxTask04 */
     /* Infinite loop */
 
-    //com1.Puts("\r\nDmitry Hello!\r\n");
+    // com1.Puts("\r\nDmitry Hello!\r\n");
 
     for (;;)
     {
         osDelay(1000);
-/*
-        _MyString<6*5+3>  str;
-        str.uint16toH(ADCxConvertedValue[0]);
-        str.Write(' ');
-        str.uint16toH(ADCxConvertedValue[1]);
-        str.Write(' ');
-        str.uint16toH(ADCxConvertedValue[2]);
-        str.Write(' ');
-        str.uint16toH(ADCxConvertedValue[3]);
-        str.Write(' ');
-        str.uint16toH(ADCxConvertedValue[4]);
-        str.Write(' ');
-        str.uint16toH(ADCxConvertedValue[5]);
-        str.Writes("\n\r");
-        com1.Puts(str.Reads());
-*/        
-
+        /*
+                _MyString<6*5+3>  str;
+                str.uint16toH(ADCxConvertedValue[0]);
+                str.Write(' ');
+                str.uint16toH(ADCxConvertedValue[1]);
+                str.Write(' ');
+                str.uint16toH(ADCxConvertedValue[2]);
+                str.Write(' ');
+                str.uint16toH(ADCxConvertedValue[3]);
+                str.Write(' ');
+                str.uint16toH(ADCxConvertedValue[4]);
+                str.Write(' ');
+                str.uint16toH(ADCxConvertedValue[5]);
+                str.Writes("\n\r");
+                com1.Puts(str.Reads());
+        */
     }
     /* USER CODE END StartTxTask04 */
 }
